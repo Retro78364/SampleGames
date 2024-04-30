@@ -1,14 +1,23 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import '../game_core.dart';
+import 'component_ex.dart';
 
 /// メッセージ表示・コンポーネント
-class ComponentMessage extends TextComponent with HasGameRef<GameCore> {
+class ComponentMessage extends TextComponent
+    with HasGameRef<GameCore>
+    implements ComponentEx {
   /// 表示するメッセージ
   late String _message;
 
   /// コンストラクタ
   ComponentMessage(this._message) : super();
+
+  /// Component種別を返却
+  @override
+  GameComponentType getType() {
+    return GameComponentType.typeUnknown;
+  }
 
   /// 初期処理ハンドラ
   @override

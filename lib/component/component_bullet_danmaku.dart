@@ -5,10 +5,12 @@ import 'dart:math';
 
 import '../game_core.dart';
 import 'game_components.dart';
+import 'component_ex.dart';
 
 /// 敵機の弾幕・コンポーネント
 class ComponentBulletDanmaku extends CircleComponent
-    with CollisionCallbacks, HasGameRef<GameCore> {
+    with CollisionCallbacks, HasGameRef<GameCore>
+    implements ComponentEx {
   /// 弾のサイズ
   var _size = 20.0;
 
@@ -41,7 +43,13 @@ class ComponentBulletDanmaku extends CircleComponent
     this._speedRate,
     this._speed,
     this._color,
-  ) : super() {}
+  ) : super();
+
+  /// Component種別を返却
+  @override
+  GameComponentType getType() {
+    return GameComponentType.typeEnemyBullet;
+  }
 
   /// 初期処理
   @override
@@ -95,11 +103,21 @@ class ComponentBulletDanmaku extends CircleComponent
       return;
     }
 
+    final GameComponentType type = other is ComponentEx
+        ? (other as ComponentEx).getType()
+        : GameComponentType.typeUnknown;
+
     // 弾が外枠に接触
     if (other is ScreenHitbox) {
       gameRef.remove(this);
-    } else if (other is ComponentPlayer) {
-      gameRef.remove(this);
+    } else {
+      switch (type) {
+        case GameComponentType.typePlayer:
+          gameRef.remove(this);
+          break;
+        default:
+          break;
+      }
     }
   }
 }
