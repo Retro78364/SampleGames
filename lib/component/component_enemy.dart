@@ -9,10 +9,12 @@ import '../time.dart';
 import '../audio.dart';
 import '../game_core.dart';
 import '../sprite_collector.dart';
+import 'component_ex.dart';
 
 /// 敵機・コンポーネント
 class ComponentEnemy extends SpriteComponent
-    with CollisionCallbacks, HasGameRef<GameCore> {
+    with CollisionCallbacks, HasGameRef<GameCore>
+    implements ComponentEx {
   /// 敵種別
   late int _moveType;
 
@@ -85,6 +87,12 @@ class ComponentEnemy extends SpriteComponent
         break;
     }
     _ownValue = 100;
+  }
+
+  /// Component種別を返却
+  @override
+  GameComponentType getType() {
+    return GameComponentType.typeEnemy;
   }
 
   /// ボス用の攻撃パターンを準備
@@ -241,22 +249,31 @@ class ComponentEnemy extends SpriteComponent
       return;
     }
 
-    bool isDestroy = false;
-    if (other is ComponentBulletPlayer) {
-      _life -= 1;
-      if (_life <= 0) {
-        isDestroy = true;
-      }
-    }
+    final GameComponentType type = other is ComponentEx
+        ? (other as ComponentEx).getType()
+        : GameComponentType.typeUnknown;
 
-    AudioManager.playHit();
-
-    if (isDestroy) {
-      gameRef.remove(this);
-      gameRef.incrementScore(_ownValue);
-      if (this._moveType == 7 || this._moveType == 8) {
-        gameRef.gameOver(true);
-      }
+    switch (type) {
+      case GameComponentType.typePlayerBullet:
+        // 弾が敵機に接触
+        bool isDestroy = false;
+        _life -= 1;
+        if (_life <= 0) {
+          isDestroy = true;
+        }
+        // 効果音再生
+        AudioManager.playHit();
+        if (isDestroy) {
+          // 敵機破壊
+          gameRef.remove(this);
+          gameRef.incrementScore(_ownValue);
+          if (this._moveType == 7 || this._moveType == 8) {
+            gameRef.gameOver(true);
+          }
+        }
+        break;
+      default:
+        break;
     }
   }
 }

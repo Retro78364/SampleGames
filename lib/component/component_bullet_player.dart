@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 
 import '../game_core.dart';
 import 'game_components.dart';
+import 'component_ex.dart';
 
 /// 自機弾・コンポーネント
 class ComponentBulletPlayer extends CircleComponent
-    with CollisionCallbacks, HasGameRef<GameCore> {
+    with CollisionCallbacks, HasGameRef<GameCore>
+    implements ComponentEx {
   /// 弾のサイズ
   var _size = 10.0;
 
@@ -19,6 +21,12 @@ class ComponentBulletPlayer extends CircleComponent
 
   /// コンストラクタ
   ComponentBulletPlayer(this._loc) : super();
+
+  /// Component種別を返却
+  @override
+  GameComponentType getType() {
+    return GameComponentType.typePlayerBullet;
+  }
 
   /// 初期処理
   @override
@@ -69,9 +77,22 @@ class ComponentBulletPlayer extends CircleComponent
       gameRef.remove(this);
     }
 
-    // 弾が敵機に接触
-    if (other is ComponentEnemy) {
+    final GameComponentType type = other is ComponentEx
+        ? (other as ComponentEx).getType()
+        : GameComponentType.typeUnknown;
+
+    // 弾が外枠に接触
+    if (other is ScreenHitbox) {
       gameRef.remove(this);
+    } else {
+      switch (type) {
+        case GameComponentType.typeEnemy:
+          // 弾が敵機に接触
+          gameRef.remove(this);
+          break;
+        default:
+          break;
+      }
     }
   }
 }

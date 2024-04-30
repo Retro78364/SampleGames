@@ -7,10 +7,12 @@ import '../time.dart';
 import '../audio.dart';
 import '../game_core.dart';
 import '../sprite_collector.dart';
+import 'component_ex.dart';
 
 /// 自機・コンポーネント
 class ComponentPlayer extends SpriteComponent
-    with CollisionCallbacks, KeyboardHandler, HasGameRef<GameCore> {
+    with CollisionCallbacks, KeyboardHandler, HasGameRef<GameCore>
+    implements ComponentEx {
   /// 移動量
   Vector2 _delta = Vector2.zero();
 
@@ -19,6 +21,12 @@ class ComponentPlayer extends SpriteComponent
 
   /// 時間管理オブジェクト
   TimerController timer = TimerController();
+
+  /// Component種別を返却
+  @override
+  GameComponentType getType() {
+    return GameComponentType.typePlayer;
+  }
 
   /// 初期処理ハンドラ
   @override
@@ -95,18 +103,21 @@ class ComponentPlayer extends SpriteComponent
       return;
     }
 
-    if (other is ComponentEnemy) {
-      timer.stop();
-      gameRef.gameOver(false);
-      AudioManager.playMiss();
-    } else if (other is ComponentBulletEnemy) {
-      timer.stop();
-      gameRef.gameOver(false);
-      AudioManager.playMiss();
-    } else if (other is ComponentBulletDanmaku) {
-      timer.stop();
-      gameRef.gameOver(false);
-      AudioManager.playMiss();
+    final GameComponentType type = other is ComponentEx
+        ? (other as ComponentEx).getType()
+        : GameComponentType.typeUnknown;
+
+    // 弾が外枠に接触
+    switch (type) {
+      case GameComponentType.typeEnemy:
+      case GameComponentType.typeEnemyBullet:
+        // 自機が敵・敵弾に接触
+        timer.stop();
+        gameRef.gameOver(false);
+        AudioManager.playMiss();
+        break;
+      default:
+        break;
     }
   }
 }
