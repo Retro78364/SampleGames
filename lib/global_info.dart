@@ -21,6 +21,9 @@ class GlobalInfo {
   /// デバイスの高さの1/4
   double deviceHeight1of4 = 0;
 
+  /// 移動倍率（タッチで移動させた距離をこの倍率をかけたものが移動距離となる）
+  double moveMagnification = 1.4;
+
   /// タッチ座標原点X
   /// TODO: 現在は随時更新しているが、タッチ開始以降変化しないようにする予定
   double touchBaseX = 0;
@@ -28,6 +31,12 @@ class GlobalInfo {
   /// タッチ座標原点Y
   /// TODO: 現在は随時更新しているが、タッチ開始以降変化しないようにする予定
   double touchBaseY = 0;
+
+  /// タッチダウン時のプレイヤー位置X
+  double playerPosXOnTouchDown = 0;
+
+  /// タッチダウン時のプレイヤー位置Y
+  double playerPosYOnTouchDown = 0;
 
   /// タッチ座標X
   double touchPosX = 0;

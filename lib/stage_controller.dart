@@ -154,7 +154,7 @@ class StageController {
     // 先頭要素を取得して取り除く
     oneEnemy = enemyDataList[0];
     enemyDataList.removeAt(0);
-    print("key:${oneEnemy.key} / value:${oneEnemy.value}");
+    // print("key:${oneEnemy.key} / value:${oneEnemy.value}");
 
     Future.delayed(Duration(milliseconds: oneEnemy.key), () {
       if (!_isGameRunning) {

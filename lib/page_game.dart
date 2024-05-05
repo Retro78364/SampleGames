@@ -39,6 +39,7 @@ class _PageGameState extends State<PageGame> {
         ? globalInfo.deviceWidth / devideNum
         : globalInfo.deviceHeight / devideNum;
     globalInfo.halfX = globalInfo.deviceWidth / 2;
+    globalInfo.moveMagnification = 1.4;
 
     return new Scaffold(
       // appBar: new AppBar(
@@ -50,15 +51,11 @@ class _PageGameState extends State<PageGame> {
           _calcTouchPos(details.localPosition);
         },
         onPointerDown: (PointerEvent details) {
+          // タッチ基本座標・タッチ時の自機位置を更新
           globalInfo.touchBaseX = details.localPosition.dx;
           globalInfo.touchBaseY = details.localPosition.dy;
-          _calcTouchPos(details.localPosition);
-        },
-        onPointerUp: (PointerEvent details) {
-          _calcTouchPos(details.localPosition);
-        },
-        onPointerCancel: (PointerEvent details) {
-          _calcTouchPos(details.localPosition);
+          globalInfo.playerPosXOnTouchDown = globalInfo.touchPosX;
+          globalInfo.playerPosYOnTouchDown = globalInfo.touchPosY;
         },
       ),
     );
@@ -66,11 +63,23 @@ class _PageGameState extends State<PageGame> {
 
   /// タッチ座標更新
   void _calcTouchPos(Offset currentPos) {
-    globalInfo.touchPosX =
-        globalInfo.touchPosX + currentPos.dx - globalInfo.touchBaseX;
-    globalInfo.touchPosY =
-        globalInfo.touchPosY + currentPos.dy - globalInfo.touchBaseY;
-    globalInfo.touchBaseX = currentPos.dx;
-    globalInfo.touchBaseY = currentPos.dy;
+    // タッチダウン座標からの差分を移動距離倍率を考慮して現在座標に反映
+    double diffX = currentPos.dx - globalInfo.touchBaseX;
+    double diffY = currentPos.dy - globalInfo.touchBaseY;
+    diffX *= globalInfo.moveMagnification;
+    diffY *= globalInfo.moveMagnification;
+    globalInfo.touchPosX = globalInfo.playerPosXOnTouchDown + diffX;
+    globalInfo.touchPosY = globalInfo.playerPosYOnTouchDown + diffY;
+    // 画面外には飛び出さないよう補正
+    if (globalInfo.touchPosX < 0) {
+      globalInfo.touchPosX = 0;
+    } else if (globalInfo.touchPosX > globalInfo.deviceWidth) {
+      globalInfo.touchPosX = globalInfo.deviceWidth;
+    }
+    if (globalInfo.touchPosY < 0) {
+      globalInfo.touchPosY = 0;
+    } else if (globalInfo.touchPosY > globalInfo.deviceHeight) {
+      globalInfo.touchPosY = globalInfo.deviceHeight;
+    }
   }
 }
