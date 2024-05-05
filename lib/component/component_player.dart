@@ -68,8 +68,8 @@ class ComponentPlayer extends SpriteComponent
 
   /// タップによる自機の移動
   void updateDeltaByTap() {
-    position = Vector2(gameRef.globalInfo.touchPosX - halfSize.x,
-        gameRef.globalInfo.touchPosY - halfSize.y);
+    position =
+        Vector2(gameRef.globalInfo.touchPosX, gameRef.globalInfo.touchPosY);
   }
 
   /// キーイベントハンドラ
