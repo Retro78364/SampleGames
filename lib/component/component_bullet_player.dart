@@ -10,6 +10,12 @@ import 'component_ex.dart';
 class ComponentBulletPlayer extends CircleComponent
     with CollisionCallbacks, HasGameRef<GameCore>
     implements ComponentEx {
+  /// 現在登場数
+  static var _totalAppearNum = 0;
+
+  /// 弾数制限（1以上の場合ONになる）
+  static var _BulletNumLimit = 0;
+
   /// 弾のサイズ
   var _size = 10.0;
 
@@ -75,24 +81,55 @@ class ComponentBulletPlayer extends CircleComponent
     // 弾が外枠に接触
     if (other is ScreenHitbox) {
       gameRef.remove(this);
+      onHide();
+      return;
     }
 
     final GameComponentType type = other is ComponentEx
         ? (other as ComponentEx).getType()
         : GameComponentType.typeUnknown;
 
-    // 弾が外枠に接触
-    if (other is ScreenHitbox) {
-      gameRef.remove(this);
-    } else {
-      switch (type) {
-        case GameComponentType.typeEnemy:
-          // 弾が敵機に接触
-          gameRef.remove(this);
-          break;
-        default:
-          break;
-      }
+    switch (type) {
+      case GameComponentType.typeEnemy:
+        // 弾が敵機に接触
+        gameRef.remove(this);
+        onHide();
+        break;
+      default:
+        break;
     }
+  }
+
+  /// 弾数制限値を設定
+  static void setTotalLimitNum(int limitNum) {
+    _BulletNumLimit = limitNum;
+  }
+
+  /// 登場可否
+  static bool canAppear() {
+    bool result = true;
+    if (_BulletNumLimit > 0 && _totalAppearNum >= _BulletNumLimit) {
+      result = false;
+    }
+    return result;
+  }
+
+  /// 登場ハンドラ
+  static void onAppend() {
+    if (_BulletNumLimit > 0 && _totalAppearNum <= _BulletNumLimit) {
+      _totalAppearNum += 1;
+    }
+  }
+
+  /// 非表示ハンドラ
+  static void onHide() {
+    if (_BulletNumLimit > 0 && _totalAppearNum > 0) {
+      _totalAppearNum -= 1;
+    }
+  }
+
+  /// 登場数クリア
+  static void clearAppendNum() {
+    _totalAppearNum = 0;
   }
 }
