@@ -58,6 +58,9 @@ class GameCore extends FlameGame
   Future<void> onLoad() async {
     await super.onLoad();
 
+    // 弾数制限を初期化
+    ComponentBulletPlayer.clearAppendNum();
+
     timerController = TimerController();
     stageController = StageController();
 
@@ -205,6 +208,8 @@ class GameCore extends FlameGame
                     for (int i = _sprites.length - 1; i >= 0; i--) {
                       remove(_sprites[i]);
                     }
+                    // 弾数制限を初期化
+                    ComponentBulletPlayer.clearAppendNum();
                     // 自機を画面に追加
                     charPlayer = ComponentPlayer();
                     add(charPlayer);

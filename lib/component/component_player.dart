@@ -48,8 +48,15 @@ class ComponentPlayer extends SpriteComponent
     // 矩形当たり判定設定
     add(CircleHitbox());
 
+    // 弾数制限
+    ComponentBulletPlayer.setTotalLimitNum(3);
+
+    // 定期的に弾を発射
     timer.startTime(200, () {
-      gameRef.add(ComponentBulletPlayer(position));
+      if (ComponentBulletPlayer.canAppear()) {
+        ComponentBulletPlayer.onAppend();
+        gameRef.add(ComponentBulletPlayer(position));
+      }
     });
   }
 
