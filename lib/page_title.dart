@@ -38,23 +38,10 @@ class TitlePage extends StatelessWidget {
             ),
           ),
           isVertLong
-              ? SizedBox.square(dimension: _deviceHeight / 10)
+              ? SizedBox.square(dimension: _deviceHeight / 20)
               : SizedBox.shrink(),
           TextButton(
-              child: Text("START"),
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.orange,
-              ),
-              onPressed: () {
-                AudioManager.stopBgm();
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PageGame()));
-              }),
-          isVertLong
-              ? SizedBox.square(dimension: _deviceHeight / 10)
-              : SizedBox.shrink(),
-          TextButton(
-              child: Text("START (EASY)"),
+              child: Text("STAGE 1"),
               style: TextButton.styleFrom(
                 foregroundColor: Colors.orange,
               ),
@@ -63,7 +50,62 @@ class TitlePage extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => PageGame(gameLevel: 0)));
+                        builder: (context) => PageGame(
+                              stageNumber: 1,
+                            )));
+              }),
+          isVertLong
+              ? SizedBox.square(dimension: _deviceHeight / 20)
+              : SizedBox.shrink(),
+          TextButton(
+              child: Text("STAGE 2"),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.orange,
+              ),
+              onPressed: () {
+                AudioManager.stopBgm();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PageGame(
+                              stageNumber: 2,
+                            )));
+              }),
+          isVertLong
+              ? SizedBox.square(dimension: _deviceHeight / 20)
+              : SizedBox.shrink(),
+          TextButton(
+              child: Text("STAGE 1 (EASY)"),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.orange,
+              ),
+              onPressed: () {
+                AudioManager.stopBgm();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PageGame(
+                              stageNumber: 1,
+                              gameLevel: 0,
+                            )));
+              }),
+          isVertLong
+              ? SizedBox.square(dimension: _deviceHeight / 20)
+              : SizedBox.shrink(),
+          TextButton(
+              child: Text("STAGE 2 (EASY)"),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.orange,
+              ),
+              onPressed: () {
+                AudioManager.stopBgm();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PageGame(
+                              stageNumber: 2,
+                              gameLevel: 0,
+                            )));
               }),
         ]),
       ),

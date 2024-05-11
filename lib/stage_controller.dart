@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:pair/pair.dart';
+import 'util/csv_util.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 /// ステージ制御
 /// とりあえず１面用にしか作成していない。
-/// TODO: 複数ステージ用に切り替えられるように、このクラスがステージ別の情報を複数管理するなど
-/// の形式に変更予定
 /// NOTE: この部分は元々C++のスレッドで実装しており、Dartでも isolate の compute() を使用
 /// して実装してみたが、外部からスレッドを停止させるのがうまく実装できず、タイマーで実装した。
 class StageController {
@@ -17,104 +17,7 @@ class StageController {
   /// 基本的に敵出現用（"敵種別,X座標%,Y座標%")だったが、敵種別部分を999にするとBGMを変更
   /// できる等、無理やり拡張している。
   /// TODO: このあたりは整理してリファクタが必要
-  final List<Pair<int, String>> _enemyDataListBase = [
-    const Pair(1, "999,audio/bgm_stage01.mp3"),
-    const Pair(1000, "1,0.8,-1"),
-    const Pair(400, "1,0.8,-1"),
-    const Pair(400, "1,0.8,-1"),
-    const Pair(400, "1,0.8,-1"),
-    const Pair(400, "1,0.8,-1"),
-    const Pair(400, "1,0.8,-1"),
-    const Pair(400, "1,0.8,-1"),
-    const Pair(1000, "1,0.0,-1"),
-    const Pair(400, "1,0.0,-1"),
-    const Pair(400, "1,0.0,-1"),
-    const Pair(400, "1,0.0,-1"),
-    const Pair(400, "1,0.0,-1"),
-    const Pair(400, "1,0.0,-1"),
-    const Pair(400, "1,0.0,-1"),
-    const Pair(1000, "1,-0.8,-1"),
-    const Pair(400, "1,-0.8,-1"),
-    const Pair(400, "1,-0.8,-1"),
-    const Pair(400, "1,-0.8,-1"),
-    const Pair(400, "1,-0.8,-1"),
-    const Pair(400, "1,-0.8,-1"),
-    const Pair(400, "1,-0.8,-1"),
-    const Pair(1000, "1,0.8,-1"),
-    const Pair(400, "2,0.8,-1"),
-    const Pair(400, "2,0.8,-1"),
-    const Pair(400, "2,0.8,-1"),
-    const Pair(400, "2,0.8,-1"),
-    const Pair(400, "2,0.8,-1"),
-    const Pair(400, "2,0.8,-1"),
-    const Pair(1000, "1,0.0,-1"),
-    const Pair(400, "2,0.0,-1"),
-    const Pair(400, "3,0.0,-1"),
-    const Pair(400, "2,0.0,-1"),
-    const Pair(400, "3,0.0,-1"),
-    const Pair(400, "2,0.0,-1"),
-    const Pair(400, "3,0.0,-1"),
-    const Pair(1000, "3,-0.8,-1"),
-    const Pair(400, "3,-0.8,-1"),
-    const Pair(400, "3,-0.8,-1"),
-    const Pair(400, "3,-0.8,-1"),
-    const Pair(400, "3,-0.8,-1"),
-    const Pair(400, "3,-0.8,-1"),
-    const Pair(400, "3,-0.8,-1"),
-    const Pair(1000, "1,0.4,-1"),
-    const Pair(400, "1,0.7,-1"),
-    const Pair(400, "1,0.2,-1"),
-    const Pair(400, "1,0.3,-1"),
-    const Pair(400, "1,0.8,-1"),
-    const Pair(400, "1,-0.8,-1"),
-    const Pair(400, "1,0.2,-1"),
-    const Pair(1000, "1,0.0,-1"),
-    const Pair(400, "1,-0.4,-1"),
-    const Pair(400, "1,-0.6,-1"),
-    const Pair(400, "1,-0.4,-1"),
-    const Pair(400, "1,-0.6,-1"),
-    const Pair(400, "1,0.0,-1"),
-    const Pair(400, "1,0.2,-1"),
-    const Pair(1000, "1,-0.8,-1"),
-    const Pair(400, "1,-0.2,-1"),
-    const Pair(400, "1,-0.3,-1"),
-    const Pair(400, "1,-0.4,-1"),
-    const Pair(400, "1,-0.5,-1"),
-    const Pair(400, "1,-0.1,-1"),
-    const Pair(400, "1,-0.3,-1"),
-    const Pair(1000, "1,0.1,-1"),
-    const Pair(400, "2,-0.7,-1"),
-    const Pair(400, "2,0.2,-1"),
-    const Pair(400, "2,-0.1,-1"),
-    const Pair(400, "2,0.1,-1"),
-    const Pair(400, "2,-0.3,-1"),
-    const Pair(400, "2,0.8,-1"),
-    const Pair(1000, "1,0.0,-1"),
-    const Pair(400, "2,0.0,-1"),
-    const Pair(400, "3,0.3,-1"),
-    const Pair(400, "2,-0.3,-1"),
-    const Pair(400, "3,0.2,-1"),
-    const Pair(400, "2,0.0,-1"),
-    const Pair(400, "3,-0.9,-1"),
-    const Pair(1000, "3,-0.8,-1"),
-    const Pair(400, "3,-0.4,-1"),
-    const Pair(400, "3,0.8,-1"),
-    const Pair(400, "3,-0.2,-1"),
-    const Pair(400, "3,0.8,-1"),
-    const Pair(400, "3,0.1,-1"),
-    const Pair(400, "3,-0.3,-1"),
-    const Pair(3000, "999,audio/bgm_warning.mp3"),
-    const Pair(1, "998,WARNING!"),
-    const Pair(500, "997, "),
-    const Pair(500, "998,WARNING!"),
-    const Pair(500, "997, "),
-    const Pair(500, "998,WARNING!"),
-    const Pair(500, "997, "),
-    const Pair(500, "998,WARNING!"),
-    const Pair(500, "997, "),
-    const Pair(1, "999,audio/bgm_stage01_boss.mp3"),
-    const Pair(1000, "7,0,-1"),
-  ];
+  List<Pair<int, String>> _enemyDataListBase = [];
 
   /// ステージ進行中フラグ
   bool _isGameRunning = false;
@@ -122,8 +25,10 @@ class StageController {
   /// ステージ進行用タイマー
   late StreamController<String> _resultController;
 
+  late final int _stageNumber;
+
   /// コンストラクタ
-  StageController() {
+  StageController(this._stageNumber) {
     // C++からの応答を通知するためのコントローラ作成
     _resultController = StreamController();
   }
@@ -134,8 +39,12 @@ class StageController {
   }
 
   /// ステージ進行開始
-  Future<void> runStage() async {
+  /// stageNumber ... ステージ番号
+  Future<void> runStage(int stageNumber) async {
     print("compute - runStageCore START ------------");
+
+    // ステージデータを読み込む
+    _enemyDataListBase = await _loadStageData(_stageNumber);
 
     _isGameRunning = true;
 
@@ -174,6 +83,36 @@ class StageController {
 
   /// ゲームリトライ実行
   void gameRetry() {
-    runStage();
+    runStage(_stageNumber);
+  }
+
+  /// ステージデータを読み込む
+  /// stageNumber ... ステージ番号
+  Future<List<Pair<int, String>>> _loadStageData(int stageNumber) async {
+    List<Pair<int, String>> result = [];
+
+    // assetsからテキストファイルを読込み、文字列をtsvとしてパース
+    String data =
+        await rootBundle.loadString(_getStageFilePathOfAssets(stageNumber));
+    List<List<String>> parsedStringsList =
+        await CsvUtil.parse(data, separator: '\t');
+
+    parsedStringsList.forEach((element) {
+      // print("element=$element");
+      if (element.length != 2) {
+        throw FormatException("stage data must be 'time \t string' format");
+      }
+
+      int time = int.parse(element[0]);
+      result.add(Pair(time, element[1]));
+    });
+
+    return result;
+  }
+
+  /// ステージデータのファイル名を取得
+  /// stageNumber ... ステージ番号
+  String _getStageFilePathOfAssets(int stageNumber) {
+    return 'assets/stage/stage$stageNumber.txt';
   }
 }

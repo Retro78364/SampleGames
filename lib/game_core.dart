@@ -39,9 +39,6 @@ class GameCore extends FlameGame
   /// ゲーム進行制御からの通知受け取りポート
   late ReceivePort receivePort;
 
-  /// 時間管理クラス
-  late TimerController timerController;
-
   /// グローバル情報
   late GlobalInfo globalInfo;
 
@@ -60,9 +57,6 @@ class GameCore extends FlameGame
 
     // 弾数制限を初期化
     ComponentBulletPlayer.clearAppendNum();
-
-    timerController = TimerController();
-    stageController = StageController();
 
     await SpriteCollector.loadAll();
     super.add(ScreenHitbox()); // 外枠の当たり判定追加
@@ -87,7 +81,8 @@ class GameCore extends FlameGame
     charPlayer = ComponentPlayer();
     await add(charPlayer);
 
-    stageController.runStage();
+    stageController = StageController(globalInfo.stageNumber);
+    stageController.runStage(globalInfo.stageNumber);
 
     // ゲーム思考制御からの通知
     // ここで敵を出現させたり、BGMを変更したり、ゲームを制御
@@ -119,9 +114,11 @@ class GameCore extends FlameGame
       } else if (enemyMoveType == 998) {
         // print("enemyMoveType == 998");
         add(ComponentMessage(strList[1]));
+        return;
       } else if (enemyMoveType == 997) {
         // print("enemyMoveType == 997");
         removeText();
+        return;
       }
 
       final posX = size.x / 2 + (size.x / 2) * double.parse(strList[1]);
