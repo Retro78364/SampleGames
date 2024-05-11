@@ -5,24 +5,33 @@ import 'game_core.dart';
 
 /// ゲーム画面
 class PageGame extends StatefulWidget {
+  /// ゲームレベル
   int? gameLevel;
+
+  /// ステージ番号
+  int? stageNumber;
 
   /// コンストラクタ
   /// 第二引数でゲームレベル指定
-  PageGame({Key? key, this.gameLevel}) : super(key: key);
+  PageGame({Key? key, this.gameLevel, this.stageNumber}) : super(key: key);
 
   /// ステート生成
   @override
-  State createState() => _PageGameState(gameLevel);
+  State createState() => _PageGameState(gameLevel, stageNumber);
 }
 
 /// ゲーム画面ステート
 class _PageGameState extends State<PageGame> {
+  /// ゲームレベル
   int? _gameLevel;
+
+  /// ステージ番号
+  int? _stageNumber;
+
   late GlobalInfo globalInfo;
 
   /// コンストラクタ
-  _PageGameState(this._gameLevel);
+  _PageGameState(this._gameLevel, this._stageNumber);
 
   /// UI再構築
   @override
@@ -30,6 +39,7 @@ class _PageGameState extends State<PageGame> {
     // グローバル情報を作成し、サイズ関連情報を算出
     globalInfo = GlobalInfo();
     globalInfo.gameLevel = _gameLevel ?? 1;
+    globalInfo.stageNumber = _stageNumber ?? 1;
     globalInfo.deviceWidth = MediaQuery.of(context).size.width;
     globalInfo.deviceHeight = MediaQuery.of(context).size.height;
     globalInfo.deviceHeight3of4 = globalInfo.deviceHeight * 0.75;

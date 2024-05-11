@@ -69,6 +69,7 @@ flutter:
     - assets/tiles/
     - assets/audio/
     - assets/movie/
+    - assets/stage/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

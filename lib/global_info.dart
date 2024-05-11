@@ -3,6 +3,9 @@ class GlobalInfo {
   /// ゲームレベル
   int gameLevel = 1;
 
+  /// ステージ番号
+  int stageNumber = 1;
+
   /// キャラクタの基本サイズ
   double baseSize = 0;
 

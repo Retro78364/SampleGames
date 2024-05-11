@@ -79,6 +79,18 @@ class ComponentEnemy extends SpriteComponent
         _delta.x = 1;
         _delta.y = 1.5;
         break;
+      case 4:
+        _delta.x = Random().nextDouble() * 2 - 1;
+        _delta.y = 1;
+        break;
+      case 5:
+        _delta.x = Random().nextDouble() * 2 - 1;
+        _delta.y = Random().nextDouble() + 1;
+        break;
+      case 6:
+        _delta.x = Random().nextDouble() * 2 - 1;
+        _delta.y = Random().nextDouble() + 1;
+        break;
       case 7:
       case 8:
         _life = 100;
@@ -190,27 +202,64 @@ class ComponentEnemy extends SpriteComponent
 
     super.update(delta);
 
-    if (_moveType == 7 || _moveType == 8) {
-      if (_delta.y > 0) {
-        if (position.y > gameRef.globalInfo.deviceHeight1of4) {
-          _delta.y = 0;
-          _delta.x = 2;
-          // ボスの場合は、定期的に弾発射タイマー開始
-          if (this._moveType == 7 || this._moveType == 8) {
-            prepareBullet();
+    switch (_moveType) {
+      case 4:
+      case 5:
+        if (_delta.x > 0) {
+          if (position.x >= gameRef.globalInfo.deviceWidth) {
+            _delta.x = -2;
+          }
+        } else if (_delta.x < 0) {
+          if (position.x <= 0) {
+            _delta.x = 2;
           }
         }
-      } else if (_delta.x > 0) {
-        if (position.x >= gameRef.globalInfo.deviceWidth) {
-          _delta.y = 0;
-          _delta.x = -2;
+        break;
+      case 6:
+        if (_delta.y > 0) {
+          if (position.y < gameRef.globalInfo.touchPosY) {
+            _delta.y = 0;
+            _delta.x = 2;
+            // ボスの場合は、定期的に弾発射タイマー開始
+            if (this._moveType == 7 || this._moveType == 8) {
+              prepareBullet();
+            }
+          }
+        } else if (_delta.x > 0) {
+          if (position.x >= gameRef.globalInfo.deviceWidth) {
+            _delta.y = 0;
+            _delta.x = -2;
+          }
+        } else if (_delta.x < 0) {
+          if (position.x <= 0) {
+            _delta.y = 0;
+            _delta.x = 2;
+          }
         }
-      } else if (_delta.x < 0) {
-        if (position.x <= 0) {
-          _delta.y = 0;
-          _delta.x = 2;
+        break;
+      case 7:
+      case 8:
+        if (_delta.y > 0) {
+          if (position.y > gameRef.globalInfo.deviceHeight1of4) {
+            _delta.y = 0;
+            _delta.x = 2;
+            // ボスの場合は、定期的に弾発射タイマー開始
+            if (this._moveType == 7 || this._moveType == 8) {
+              prepareBullet();
+            }
+          }
+        } else if (_delta.x > 0) {
+          if (position.x >= gameRef.globalInfo.deviceWidth) {
+            _delta.y = 0;
+            _delta.x = -2;
+          }
+        } else if (_delta.x < 0) {
+          if (position.x <= 0) {
+            _delta.y = 0;
+            _delta.x = 2;
+          }
         }
-      }
+        break;
     }
 
     // 移動量に従って表示位置更新
