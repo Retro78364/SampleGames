@@ -93,6 +93,7 @@ class ComponentEnemy extends SpriteComponent
         break;
       case 7:
       case 8:
+      case 9:
         _life = 100;
         _delta.x = 0;
         _delta.y = 1;
@@ -220,10 +221,6 @@ class ComponentEnemy extends SpriteComponent
           if (position.y < gameRef.globalInfo.touchPosY) {
             _delta.y = 0;
             _delta.x = 2;
-            // ボスの場合は、定期的に弾発射タイマー開始
-            if (this._moveType == 7 || this._moveType == 8) {
-              prepareBullet();
-            }
           }
         } else if (_delta.x > 0) {
           if (position.x >= gameRef.globalInfo.deviceWidth) {
@@ -239,12 +236,14 @@ class ComponentEnemy extends SpriteComponent
         break;
       case 7:
       case 8:
+      case 9:
         if (_delta.y > 0) {
           if (position.y > gameRef.globalInfo.deviceHeight1of4) {
             _delta.y = 0;
             _delta.x = 2;
             // ボスの場合は、定期的に弾発射タイマー開始
-            if (this._moveType == 7 || this._moveType == 8) {
+            if (this._moveType == 7 || this._moveType == 8
+              || this._moveType == 9) {
               prepareBullet();
             }
           }
@@ -265,7 +264,7 @@ class ComponentEnemy extends SpriteComponent
     // 移動量に従って表示位置更新
     position += _delta * delta * 100;
 
-    if (_moveType == 7 || _moveType == 8) {
+    if (_moveType == 7 || _moveType == 8 || _moveType == 9) {
       int current = TimerController.getMillisec();
       if (_bossAttack.length > 0) {
         Pair<int, int> one = _bossAttack[0];
@@ -316,7 +315,7 @@ class ComponentEnemy extends SpriteComponent
           // 敵機破壊
           gameRef.remove(this);
           gameRef.incrementScore(_ownValue);
-          if (this._moveType == 7 || this._moveType == 8) {
+          if (this._moveType == 7 || this._moveType == 8 || this._moveType == 9) {
             gameRef.gameOver(true);
           }
         }

@@ -1,4 +1,4 @@
-1	999,audio/bgm_stage01.mp3
+1	999,audio/bgm_stage02.mp3
 1	998,STAGE 2
 2000	997, 
 500	4,0.2,-1
